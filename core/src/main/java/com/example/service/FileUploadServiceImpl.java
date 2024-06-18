@@ -5,6 +5,7 @@ import com.example.dao.UserRepository;
 import com.example.exception.FileSaveException;
 import com.example.model.FileEntity;
 import com.example.model.UserEntity;
+import com.example.valodator.FileUploadValidator;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,10 +20,12 @@ import java.util.List;
 public class FileUploadServiceImpl implements FileUploadService{
     private final FileRepository fileRepository;
     private final UserRepository userRepository;
+    private final FileUploadValidator fileUploadValidator;
 
-    public FileUploadServiceImpl(FileRepository fileRepository, UserRepository userRepository) {
+    public FileUploadServiceImpl(FileRepository fileRepository, UserRepository userRepository, FileUploadValidator fileUploadValidator) {
         this.fileRepository = fileRepository;
         this.userRepository = userRepository;
+        this.fileUploadValidator = fileUploadValidator;
     }
     private String uploadDir = "upload/";
     @Override
@@ -32,6 +35,7 @@ public class FileUploadServiceImpl implements FileUploadService{
             throw new UsernameNotFoundException("User not found");
         }
         for (MultipartFile file: files){
+            fileUploadValidator.validate(file);
             saveFile(file,user);
         }
     }
