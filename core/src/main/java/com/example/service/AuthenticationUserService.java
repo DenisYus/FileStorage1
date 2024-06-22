@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dao.UserRepository;
 import com.example.exception.UserHasBeenBannedException;
+import com.example.model.UserStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -26,7 +27,7 @@ public class AuthenticationUserService implements UserDetailsService {
         var user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
-        } else if (user.getBanCheck()) {
+        } else if (user.getStatus().equals(UserStatus.BAN)) {
             throw new UserHasBeenBannedException("User has been banned");
         }
         return new User(user.getEmail(), user.getPassword(), user.getRoles().stream()

@@ -2,6 +2,7 @@ package com.example.service;
 
 import com.example.dao.UserRepository;
 import com.example.model.UserEntity;
+import com.example.model.UserStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,21 +23,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void saveUser(UserEntity user) {
+    public void registerUser(UserEntity user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setBanCheck(false); //CHECK ME
+        user.setStatus(UserStatus.UNBAN);
         userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void updateUser(UserEntity updateUser, Integer id) {
+    public void changeUserStatus(Integer id, UserStatus status) {
         UserEntity user = getUserById(id);
-        if (!(user.getPassword()).equals(updateUser.getPassword())) {
-            updateUser.setPassword(passwordEncoder.encode(updateUser.getPassword()));
-
-        }
-        userRepository.save(updateUser);
+        user.setStatus(status);
+        userRepository.save(user);
     }
 
     @Override

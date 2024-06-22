@@ -19,5 +19,5 @@ public class FileDto {
 
     private Long size;
 
-    private LocalDateTime uploadData;
+    private LocalDateTime uploadDate;
 }

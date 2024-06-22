@@ -1,11 +1,12 @@
 package com.example.service;
 
 import com.example.model.UserEntity;
+import com.example.model.UserStatus;
 
 public interface UserService {
-    void saveUser(UserEntity user);
+    void registerUser(UserEntity user);
 
-    void updateUser(UserEntity updateUser, Integer id);
+    void changeUserStatus(Integer id, UserStatus status);
 
     UserEntity getUserById(Integer id);
     UserEntity loadUserByUsername(String email);

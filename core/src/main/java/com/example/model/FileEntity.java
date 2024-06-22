@@ -23,7 +23,7 @@ public class FileEntity {
     @NotNull
     private Long size;
     @NotNull
-    private LocalDateTime uploadData;
+    private LocalDateTime uploadDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

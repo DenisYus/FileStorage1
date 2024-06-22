@@ -28,13 +28,14 @@ public class UserEntity {
     @NotEmpty(message = "Email should not be empty")
     @Email(message = "Email should be valid")
     @NotNull
-    @Column(unique = true) //CHECK ME
+    @Column(unique = true)
     private String email;
 
     @NotEmpty(message = "Password should not be empty")
     @NotNull
     private String password;
-    private Boolean banCheck;//CHECK ME
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
     @ManyToMany
     @Fetch(FetchMode.JOIN)
     @JoinTable(name = "users_roles",

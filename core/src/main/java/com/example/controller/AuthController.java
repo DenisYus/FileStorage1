@@ -29,7 +29,7 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody FullUserDto user) {
         UserEntity userEntity = FullUserMapper.INSTANCE.toEntity(user);
-        userService.saveUser(userEntity);
+        userService.registerUser(userEntity);
         var jwtToken = jwtService.generateToken(authenticationUserService.loadUserByUsername(user.getEmail()));
         return ResponseEntity.ok(AuthenticationResponse.builder().token(jwtToken).build());
     }
