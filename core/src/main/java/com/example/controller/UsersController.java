@@ -18,9 +18,8 @@ public class UsersController {
     }
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     @PostMapping("/change-status/{userId}")
-    public ResponseEntity<String> changeUserStatus(@AuthenticationPrincipal UserDetails currentUser,
-                                                   @PathVariable Integer userId, @RequestParam UserStatus status){
+    public ResponseEntity<Void> changeUserStatus(@PathVariable Integer userId, @RequestParam UserStatus status){
         userService.changeUserStatus(userId, status);
-        return ResponseEntity.ok("user status changed");
+        return ResponseEntity.ok().build();
     }
 }

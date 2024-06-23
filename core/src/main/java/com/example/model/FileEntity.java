@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class FileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @NotEmpty()
     private String name;
     @NotNull

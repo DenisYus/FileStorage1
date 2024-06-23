@@ -1,6 +1,6 @@
 package com.example.model;
 
 public enum UserStatus {
-    BAN,
-    UNBAN
+    ACTIVE,
+    BLOCKED
 }

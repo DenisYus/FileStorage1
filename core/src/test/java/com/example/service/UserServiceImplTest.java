@@ -21,9 +21,9 @@ class UserServiceImplTest extends BaseIntegrationTest {
 
 
     @Test
-    void saveUser() {
+    void registerUser() {
         //given
-        var user = UserEntity.builder().email("denis@mail.ru").password("123").status(UserStatus.UNBAN).build();
+        var user = UserEntity.builder().email("denis@mail.ru").password("123").status(UserStatus.ACTIVE).build();
         //when
         userService.registerUser(user);
         //then
@@ -38,7 +38,7 @@ class UserServiceImplTest extends BaseIntegrationTest {
         //given
         var getUser = userService.getUserById(1);
         //when
-        userService.changeUserStatus(1, UserStatus.BAN);
+        userService.changeUserStatus(1, UserStatus.BLOCKED);
         //then
         var getUpdateUser = userService.getUserById(1);
         assertNotEquals(getUser.getStatus(), getUpdateUser.getStatus());
@@ -48,7 +48,7 @@ class UserServiceImplTest extends BaseIntegrationTest {
     @Test
     void getUserById() {
         //given
-        var user = UserEntity.builder().email("denis1@mail.ru").password("123").status(UserStatus.UNBAN).build();
+        var user = UserEntity.builder().email("denis1@mail.ru").password("123").status(UserStatus.ACTIVE).build();
         userService.registerUser(user);
         //when
         var getUser = userService.getUserById(3);
@@ -60,7 +60,7 @@ class UserServiceImplTest extends BaseIntegrationTest {
     @Test
     void loadUserByUsername() {
         //given
-        var user = UserEntity.builder().email("denis2@mail.ru").password("123").status(UserStatus.UNBAN).build();
+        var user = UserEntity.builder().email("denis2@mail.ru").password("123").status(UserStatus.ACTIVE).build();
         userService.registerUser(user);
         //when
         var saved = userService.loadUserByUsername("denis2@mail.ru");

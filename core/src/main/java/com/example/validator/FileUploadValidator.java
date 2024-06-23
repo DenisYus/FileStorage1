@@ -1,4 +1,4 @@
-package com.example.valodator;
+package com.example.validator;
 
 import com.example.exception.FileExtensionException;
 import com.example.exception.FileNameException;
@@ -31,10 +31,10 @@ public class FileUploadValidator {
         }
         String fileExtension = getFileExtensive(fileName);
         if (!allowExtensionsList.contains(fileExtension)){
-            throw new FileExtensionException("File extension should be .pnd or .jpg");
+            throw new FileExtensionException(String.format("File extension should be %s ", allowedExtensions));
         }
         if (file.getSize() > maxFileSize){
-            throw new FileSizeException("File size should not be more than 10MB");
+            throw new FileSizeException(String.format("File size should not be more than %d ", maxFileSize)); //FIXME преобразовать в человекочитаемый формат
         }
 
 

@@ -27,7 +27,7 @@ public class AuthenticationUserService implements UserDetailsService {
         var user = userRepository.findByEmail(email);
         if (user == null) {
             throw new UsernameNotFoundException("User not found");
-        } else if (user.getStatus().equals(UserStatus.BAN)) {
+        } else if (user.getStatus().equals(UserStatus.BLOCKED)) {
             throw new UserHasBeenBannedException("User has been banned");
         }
         return new User(user.getEmail(), user.getPassword(), user.getRoles().stream()

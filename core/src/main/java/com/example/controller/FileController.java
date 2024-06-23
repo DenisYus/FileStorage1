@@ -6,6 +6,7 @@ import com.example.mapers.FileMapper;
 import com.example.model.FileEntity;
 import com.example.model.UserEntity;
 import com.example.service.FileService;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,41 +22,42 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/files")
 public class FileController {
+    private static final String HEADER_VALUES = "attachment; filename=\"%s\"";
+
     public final FileService fileService;
 
     public FileController(FileService fileService) {
         this.fileService = fileService;
     }
+
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("email") String email,
+    public ResponseEntity<String> uploadFile(@AuthenticationPrincipal UserEntity user,
                                              @RequestParam("files")List<MultipartFile> files){
-        fileService.uploadFiles(email, files);
+        fileService.uploadFiles(user.getEmail(), files);
         return ResponseEntity.ok("File uploaded");
     }
     @GetMapping("/user-files")
-    public ResponseEntity<List<FileDto>> getUserFiles(@AuthenticationPrincipal UserEntity user, @RequestBody FileFilterDto filterDto){
-        List<FileDto> fileDtos = FileMapper.INSTANCE.toDtoList(fileService.getUserFiles(user, filterDto));
+    public ResponseEntity<List<FileDto>> getUserFiles(@AuthenticationPrincipal UserEntity user,
+                                                      @RequestBody FileFilterDto filterDto){
+        List<FileDto> fileDtos = FileMapper.INSTANCE.toDtoList(fileService.getFilterAndSortedFiles(user, filterDto));
         return ResponseEntity.ok(fileDtos);
     }
     @GetMapping("/all-files")
     @PreAuthorize("hasRole('ROLE_MODERATOR')")
     public ResponseEntity<List<FileDto>> getAllFiles (@RequestBody FileFilterDto filterDto){
-        List<FileDto> fileDtos = FileMapper.INSTANCE.toDtoList(fileService.getAllFiles(filterDto));
+        List<FileDto> fileDtos = FileMapper.INSTANCE.toDtoList(fileService.getFilterAndSortedFiles(filterDto));
         return new ResponseEntity<>(fileDtos, HttpStatus.OK);
     }
 
+    // FIXME: вообще лучше дробить файл на мелкие чанки, чтобы в будущем поддерживать загрузку больших файлов, но не успел
+    //FIXME:ХЭНДЛЕР
     @GetMapping("/download/{fileName}")
-    public  ResponseEntity<byte[]> downloadFile(@AuthenticationPrincipal UserEntity user,
-                                                @PathVariable String fileName){
-        try {
-            byte[] fileData = fileService.downloadFile(fileName, user);
+    public  ResponseEntity<InputStreamResource> downloadFile(@PathVariable String fileName, @AuthenticationPrincipal UserEntity user) throws IOException {
 
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .header(HttpHeaders.CONTENT_DISPOSITION,"attachment; filename=\""+fileName+
-                            "\"").body(fileData);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
+        InputStreamResource resource = fileService.downloadFile(fileName, user);
+        return  ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, String.format(HEADER_VALUES,fileName))
+                .body(resource);
+
     }
 }

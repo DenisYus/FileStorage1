@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Claims;
@@ -17,7 +18,9 @@ import java.util.function.Function;
 @Service
 public class JwtService {
     public final long JWT_EXPIRATION = 70000000;
-    public final String JWT_SECRET = "YwmvxowizFotVFkzpVT24iG7f2KqOJzJcdnsl1Bdk4islu7236";
+
+    @Value("${jwt.secret}")
+    public String JWT_SECRET;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

@@ -15,7 +15,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-    @Lazy
+
     public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void registerUser(UserEntity user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setStatus(UserStatus.UNBAN);
+        user.setStatus(UserStatus.ACTIVE);
         userRepository.save(user);
     }
 
